@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "376428792461",
+    "project_id": "um-connect",
+    "storage_bucket": "um-connect.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376428792461:android:abf62679ba3440059cf0c4",
+        "android_client_info": {
+          "package_name": "com.example.um_connect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzlx6582uenVkHWzWmUly4z2C0rigGrEg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
