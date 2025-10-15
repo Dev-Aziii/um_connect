@@ -6,6 +6,7 @@ class Event {
   final String imageUrl;
   final DateTime date;
   final String venue;
+  final String detail;
 
   Event({
     required this.id,
@@ -13,6 +14,7 @@ class Event {
     required this.imageUrl,
     required this.date,
     required this.venue,
+    required this.detail,
   });
 
   /// Factory constructor to create an Event from a Firestore document.
@@ -24,6 +26,7 @@ class Event {
       imageUrl: data['imageUrl'] ?? '',
       date: (data['date'] as Timestamp).toDate(),
       venue: data['venue'] ?? 'No Venue',
+      detail: data['detail'] ?? 'No detail',
     );
   }
 }

@@ -98,8 +98,7 @@ class EventDetailScreen extends ConsumerWidget {
                           context,
                           icon: Icons.info_outline_rounded,
                           title: 'About this Event',
-                          subtitle:
-                              'Detailed description about the event goes here. It can span multiple lines and give attendees important information about what to expect.',
+                          subtitle: event.detail,
                         ),
                         const SizedBox(height: 24),
                       ],
