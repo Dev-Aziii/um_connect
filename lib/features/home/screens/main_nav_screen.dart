@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:um_connect/features/announcements/screens/announcements_screen.dart';
+import 'package:um_connect/features/announcements/screens/announcements_list_screen.dart';
 import 'package:um_connect/features/events/screens/events_list_screen.dart';
 import 'package:um_connect/features/home/screens/home_screen.dart';
 import 'package:um_connect/features/profile/screens/profile_screen.dart';
