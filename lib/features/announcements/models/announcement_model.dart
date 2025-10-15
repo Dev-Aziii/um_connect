@@ -6,14 +6,14 @@ class Announcement {
   final String title;
   final String content;
   final String category;
-  final DateTime timestamp;
+  final DateTime date;
 
   Announcement({
     required this.id,
     required this.title,
     required this.content,
     required this.category,
-    required this.timestamp,
+    required this.date,
   });
 
   /// Factory constructor to create an Announcement from a Firestore document.
@@ -24,7 +24,7 @@ class Announcement {
       title: data['title'] ?? 'No Title',
       content: data['content'] ?? '',
       category: data['category'] ?? 'General',
-      timestamp: (data['date'] as Timestamp).toDate(),
+      date: (data['date'] as Timestamp).toDate(),
     );
   }
 }
