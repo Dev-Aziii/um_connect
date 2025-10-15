@@ -54,7 +54,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
       bottomNavigationBar: CurvedNavigationBar(
         index: _selectedIndex,
         height: 60.0,
-        color: Color.fromARGB(40, 143, 30, 41),
+        color: Color.fromARGB(40, 111, 83, 86),
         buttonBackgroundColor: Theme.of(context).primaryColor,
         backgroundColor: Colors.transparent,
         animationCurve: Curves.easeInOut,
