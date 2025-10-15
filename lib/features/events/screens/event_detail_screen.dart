@@ -24,7 +24,6 @@ class EventDetailScreen extends ConsumerWidget {
     });
 
     return Scaffold(
-      backgroundColor: Colors.grey[200],
       body: eventAsyncValue.when(
         data: (event) {
           return SingleChildScrollView(

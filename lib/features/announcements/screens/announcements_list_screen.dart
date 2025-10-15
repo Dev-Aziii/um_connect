@@ -12,7 +12,7 @@ class AnnouncementsScreen extends ConsumerWidget {
     final announcementsAsyncValue = ref.watch(recentAnnouncementsProvider);
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      appBar: AppBar(title: const Text('All Announcements')),
       body: announcementsAsyncValue.when(
         data: (announcements) {
           if (announcements.isEmpty) {
@@ -23,27 +23,27 @@ class AnnouncementsScreen extends ConsumerWidget {
               ref.invalidate(recentAnnouncementsProvider);
               await Future.delayed(const Duration(seconds: 1));
             },
-            child: ListView.builder(
+            child: ListView.separated(
               padding: const EdgeInsets.all(16.0),
               itemCount: announcements.length,
               itemBuilder: (context, index) {
                 final announcement = announcements[index];
                 return Card(
-                  margin: const EdgeInsets.only(bottom: 12.0),
-                  elevation: 2,
+                  elevation: 3,
                   shadowColor: Colors.black.withOpacity(0.1),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(15),
                   ),
+                  clipBehavior: Clip.antiAlias,
                   child: InkWell(
-                    // --- UPDATED onTap ---
                     onTap: () {
-                      // Navigate to the detail screen, passing the announcement's ID
                       context.go('/home/announcement/${announcement.id}');
                     },
-                    borderRadius: BorderRadius.circular(12),
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 20.0,
+                      ),
                       child: Row(
                         children: [
                           CircleAvatar(
@@ -62,21 +62,27 @@ class AnnouncementsScreen extends ConsumerWidget {
                               children: [
                                 Text(
                                   announcement.title,
-                                  style: Theme.of(context).textTheme.titleMedium
-                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: 6),
                                 Text(
                                   'Posted on ${DateFormat.yMMMd().format(announcement.date)}',
-                                  style: Theme.of(context).textTheme.bodySmall,
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                          const Icon(
+                          const SizedBox(width: 8),
+                          Icon(
                             Icons.arrow_forward_ios,
                             size: 16,
-                            color: Colors.grey,
+                            color: Colors.grey[400],
                           ),
                         ],
                       ),
@@ -84,12 +90,13 @@ class AnnouncementsScreen extends ConsumerWidget {
                   ),
                 );
               },
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
             ),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) =>
-            const Center(child: Text('Could not load announcements.')),
+            Center(child: Text('Could not load announcements: $err')),
       ),
     );
   }

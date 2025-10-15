@@ -6,14 +6,20 @@ final eventsRepositoryProvider = Provider<EventsRepository>((ref) {
   return EventsRepository();
 });
 
+/// Provider for the limited list of events on the home screen.
 final upcomingEventsProvider = FutureProvider<List<Event>>((ref) {
   final repository = ref.watch(eventsRepositoryProvider);
   return repository.getUpcomingEvents();
 });
 
 // --- NEW PROVIDER ---
-// A FutureProvider.family is used when you need to pass an argument (the eventId)
-// to your provider to fetch specific data.
+/// Provider for the full list of all upcoming events for the dedicated Events screen.
+final allUpcomingEventsProvider = FutureProvider<List<Event>>((ref) {
+  final repository = ref.watch(eventsRepositoryProvider);
+  return repository.getAllUpcomingEvents();
+});
+
+/// Provider that fetches a single event by its ID.
 final eventByIdProvider = FutureProvider.family<Event, String>((ref, eventId) {
   final repository = ref.watch(eventsRepositoryProvider);
   return repository.getEventById(eventId);

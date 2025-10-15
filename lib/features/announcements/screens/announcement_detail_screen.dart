@@ -14,7 +14,6 @@ class AnnouncementDetailScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text('Announcement'),
         backgroundColor: Theme.of(context).primaryColor,

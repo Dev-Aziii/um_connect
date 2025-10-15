@@ -5,7 +5,7 @@ class AppTheme {
   // primary colors based on UM branding.
   static const Color primaryColor = Color(0xFF8F1E29);
   static const Color accentColor = Color(0xFFf98800);
-  static const Color backgroundColor = Color(0xFFF5F5F5);
+  static const Color backgroundColor = Color(0xFFe5e4e4);
   static const Color textColor = Color(0xFF333333);
 
   static final ThemeData lightTheme = ThemeData(
@@ -16,6 +16,15 @@ class AppTheme {
       primary: primaryColor,
       secondary: accentColor,
       background: backgroundColor,
+    ),
+
+    cardTheme: const CardThemeData(
+      color: Colors.white,
+      elevation: 2,
+      margin: EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
     ),
 
     // theme for AppBars throughout the app.

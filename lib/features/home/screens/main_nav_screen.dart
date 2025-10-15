@@ -54,7 +54,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
       bottomNavigationBar: CurvedNavigationBar(
         index: _selectedIndex,
         height: 60.0,
-        color: Color.fromARGB(40, 111, 83, 86),
+        color: Theme.of(context).primaryColor,
         buttonBackgroundColor: Theme.of(context).primaryColor,
         backgroundColor: Colors.transparent,
         animationCurve: Curves.easeInOut,
@@ -70,13 +70,13 @@ class _MainNavScreenState extends State<MainNavScreen> {
               Icon(
                 icons[index],
                 size: isSelected ? 26 : 24,
-                color: isSelected ? Colors.white : Colors.black54,
+                color: isSelected ? Colors.white : Colors.white,
               ),
               const SizedBox(height: 2),
               if (!isSelected)
                 Text(
                   labels[index],
-                  style: const TextStyle(fontSize: 9, color: Colors.black54),
+                  style: const TextStyle(fontSize: 9, color: Colors.white),
                 ),
             ],
           );
