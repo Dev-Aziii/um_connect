@@ -1,12 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:um_connect/features/events/models/event_model.dart';
 
-/// Handles all database operations related to events.
 class EventsRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  /// Fetches a list of upcoming events from Firestore.
-  /// It only gets events where the date is in the future and limits the result to 10.
   Future<List<Event>> getUpcomingEvents() async {
     try {
       final snapshot = await _firestore
@@ -20,6 +17,18 @@ class EventsRepository {
     } catch (e) {
       print('Error fetching upcoming events: $e');
       return [];
+    }
+  }
+
+  // --- NEW METHOD ---
+  // Fetches a single event document by its ID.
+  Future<Event> getEventById(String eventId) async {
+    try {
+      final doc = await _firestore.collection('events').doc(eventId).get();
+      return Event.fromFirestore(doc);
+    } catch (e) {
+      print('Error fetching event by ID: $e');
+      rethrow; // Rethrow the error to be handled by the provider
     }
   }
 }

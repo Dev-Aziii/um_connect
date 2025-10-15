@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:um_connect/features/events/models/event_model.dart';
 
@@ -21,20 +22,18 @@ class EventCard extends StatelessWidget {
           ),
         ],
       ),
-      // The outer InkWell handles navigation to the detail screen (TODO)
       child: InkWell(
+        // --- THIS IS THE MODIFIED PART ---
         onTap: () {
-          // TODO: Navigate to event detail screen
+          // Use GoRouter to navigate to the detail screen, passing the event's ID.
+          context.go('/home/event/${event.id}');
         },
         borderRadius: BorderRadius.circular(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- MODIFIED SECTION ---
-            // A nested InkWell specifically for tapping the image
             InkWell(
               onTap: () {
-                // Show a dialog to display the full-screen image
                 showDialog(
                   context: context,
                   builder: (_) => ImageDialog(imageUrl: event.imageUrl),
@@ -64,9 +63,6 @@ class EventCard extends StatelessWidget {
                 ),
               ),
             ),
-            // --- END MODIFIED SECTION ---
-
-            // Event Details (unchanged)
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(
@@ -131,7 +127,6 @@ class EventCard extends StatelessWidget {
   }
 }
 
-// A new widget for the image dialog to keep the build method clean
 class ImageDialog extends StatelessWidget {
   final String imageUrl;
   const ImageDialog({super.key, required this.imageUrl});
@@ -144,14 +139,12 @@ class ImageDialog extends StatelessWidget {
       child: Stack(
         alignment: Alignment.topRight,
         children: [
-          // InteractiveViewer allows zooming and panning of the image
           InteractiveViewer(
             panEnabled: true,
             minScale: 0.5,
             maxScale: 4,
             child: Center(child: Image.network(imageUrl, fit: BoxFit.contain)),
           ),
-          // A close button positioned at the top right
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
