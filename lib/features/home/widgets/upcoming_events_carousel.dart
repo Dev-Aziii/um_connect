@@ -15,14 +15,15 @@ class UpcomingEventsCarousel extends ConsumerStatefulWidget {
 class _UpcomingEventsCarouselState
     extends ConsumerState<UpcomingEventsCarousel> {
   late PageController _pageController;
+  late List eventsList;
 
   @override
   void initState() {
     super.initState();
-    // viewportFraction controls how much of the screen each page takes up.
-    // 0.85 means each page will take 85% of the screen width,
-    // leaving space for the next and previous pages to peek through.
-    _pageController = PageController(viewportFraction: 0.85);
+    _pageController = PageController(
+      viewportFraction: 0.85,
+      initialPage: 1000, // Start somewhere in the middle for infinite feel
+    );
   }
 
   @override
@@ -43,18 +44,19 @@ class _UpcomingEventsCarouselState
             child: Center(child: Text('No upcoming events.')),
           );
         }
+
+        final itemCount = events.length;
         return SizedBox(
           height: 250,
           child: PageView.builder(
             controller: _pageController,
-            itemCount: events.length,
-            // Set clipBehavior to none to allow the peeking items to be visible.
             clipBehavior: Clip.none,
             itemBuilder: (context, index) {
-              // Add padding to each page to create space between the cards.
+              // Modulo to loop the items infinitely
+              final currentIndex = index % itemCount;
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: EventCard(event: events[index]),
+                child: EventCard(event: events[currentIndex]),
               );
             },
           ),
