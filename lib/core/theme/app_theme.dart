@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   // primary colors based on UM branding.
   static const Color primaryColor = Color(0xFF8F1E29);
-  static const Color accentColor = Color(0xFFFDD100);
+  static const Color accentColor = Color(0xFFf98800);
   static const Color backgroundColor = Color(0xFFF5F5F5);
   static const Color textColor = Color(0xFF333333);
 
