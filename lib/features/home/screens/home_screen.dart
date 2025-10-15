@@ -17,7 +17,6 @@ class HomeScreen extends ConsumerWidget {
     return SafeArea(
       child: RefreshIndicator(
         onRefresh: () async {
-          // Invalidate providers to refetch data on pull-to-refresh
           ref.invalidate(upcomingEventsProvider);
           ref.invalidate(recentAnnouncementsProvider);
           await Future.delayed(const Duration(seconds: 1));
@@ -25,11 +24,8 @@ class HomeScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(16.0),
           children: [
-            // --- Enhanced Greeting Section ---
             _buildGreetingCard(context, displayName),
             const SizedBox(height: 24),
-
-            // --- Quick Actions Section ---
             _buildSectionHeader(
               context,
               icon: Icons.widgets_outlined,
@@ -39,8 +35,6 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             _buildQuickActions(context),
             const SizedBox(height: 24),
-
-            // --- Upcoming Events Section ---
             _buildSectionHeader(
               context,
               icon: Icons.celebration_outlined,
@@ -50,11 +44,8 @@ class HomeScreen extends ConsumerWidget {
               },
             ),
             const SizedBox(height: 12),
-            // The outer Card has been removed from here
             const UpcomingEventsCarousel(),
             const SizedBox(height: 24),
-
-            // --- Latest Announcements Section ---
             _buildSectionHeader(
               context,
               icon: Icons.campaign_outlined,
@@ -64,7 +55,6 @@ class HomeScreen extends ConsumerWidget {
               },
             ),
             const SizedBox(height: 12),
-            // The outer Card has been removed from here
             const LatestAnnouncementsList(),
           ],
         ),
@@ -72,7 +62,6 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  // Helper widget for the enhanced greeting card.
   Widget _buildGreetingCard(BuildContext context, String displayName) {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -120,7 +109,6 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  // Helper widget for the quick action buttons grid.
   Widget _buildQuickActions(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -150,7 +138,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  // Helper widget for creating consistent section headers.
+  // --- THIS IS THE MODIFIED WIDGET ---
   Widget _buildSectionHeader(
     BuildContext context, {
     required IconData icon,
@@ -159,21 +147,21 @@ class HomeScreen extends ConsumerWidget {
     bool hasViewAll = true,
   }) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Row(
-          children: [
-            Icon(icon, color: Theme.of(context).primaryColor, size: 24),
-            const SizedBox(width: 8),
-            Text(
-              title,
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-            ),
-          ],
+        Icon(icon, color: Theme.of(context).primaryColor, size: 24),
+        const SizedBox(width: 8),
+        // The Text widget is now wrapped in Expanded.
+        // This tells it to take up all available horizontal space.
+        Expanded(
+          child: Text(
+            title,
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
         ),
+        // This TextButton will now be pushed to the far right.
         if (hasViewAll)
           TextButton(
             onPressed: onTap,
@@ -190,7 +178,6 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-// A reusable widget for the individual quick action buttons.
 class _QuickActionButton extends StatelessWidget {
   final IconData icon;
   final String label;

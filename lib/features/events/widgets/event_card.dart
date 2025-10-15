@@ -9,7 +9,6 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The width is now controlled by the parent widget (the carousel)
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -22,6 +21,7 @@ class EventCard extends StatelessWidget {
           ),
         ],
       ),
+      // The outer InkWell handles navigation to the detail screen (TODO)
       child: InkWell(
         onTap: () {
           // TODO: Navigate to event detail screen
@@ -30,32 +30,43 @@ class EventCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Event Image
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
-              ),
-              child: Image.network(
-                event.imageUrl,
-                height: 120,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                // Placeholder and error handling for images
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(child: CircularProgressIndicator());
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(
-                    Icons.broken_image,
-                    size: 50,
-                    color: Colors.grey,
-                  );
-                },
+            // --- MODIFIED SECTION ---
+            // A nested InkWell specifically for tapping the image
+            InkWell(
+              onTap: () {
+                // Show a dialog to display the full-screen image
+                showDialog(
+                  context: context,
+                  builder: (_) => ImageDialog(imageUrl: event.imageUrl),
+                );
+              },
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(12),
+                  topRight: Radius.circular(12),
+                ),
+                child: Image.network(
+                  event.imageUrl,
+                  height: 120,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(
+                      Icons.broken_image,
+                      size: 50,
+                      color: Colors.grey,
+                    );
+                  },
+                ),
               ),
             ),
-            // Event Details
+            // --- END MODIFIED SECTION ---
+
+            // Event Details (unchanged)
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(
@@ -67,7 +78,6 @@ class EventCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
                     ),
-                    // Allow the title to wrap to a second line
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -116,6 +126,43 @@ class EventCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// A new widget for the image dialog to keep the build method clean
+class ImageDialog extends StatelessWidget {
+  final String imageUrl;
+  const ImageDialog({super.key, required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.all(10),
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: [
+          // InteractiveViewer allows zooming and panning of the image
+          InteractiveViewer(
+            panEnabled: true,
+            minScale: 0.5,
+            maxScale: 4,
+            child: Center(child: Image.network(imageUrl, fit: BoxFit.contain)),
+          ),
+          // A close button positioned at the top right
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              icon: const CircleAvatar(
+                backgroundColor: Colors.black54,
+                child: Icon(Icons.close, color: Colors.white),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+        ],
       ),
     );
   }
