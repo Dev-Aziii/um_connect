@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:um_connect/features/announcements/screens/announcements_screen.dart';
 import 'package:um_connect/features/events/screens/events_list_screen.dart';
 import 'package:um_connect/features/home/screens/home_screen.dart';
@@ -14,11 +15,28 @@ class MainNavScreen extends StatefulWidget {
 class _MainNavScreenState extends State<MainNavScreen> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
-    EventsListScreen(),
-    AnnouncementsScreen(),
-    ProfileScreen(),
+  final List<Widget> _widgetOptions = <Widget>[
+    const HomeScreen(),
+    const EventsListScreen(),
+    const AnnouncementsScreen(),
+    const ProfileScreen(),
+    const Center(child: Text("Settings Screen")),
+  ];
+
+  final List<IconData> icons = [
+    Icons.home,
+    Icons.calendar_today,
+    Icons.campaign,
+    Icons.person,
+    Icons.settings,
+  ];
+
+  final List<String> labels = [
+    'Home',
+    'Events',
+    'Announce',
+    'Profile',
+    'Settings',
   ];
 
   void _onItemTapped(int index) {
@@ -30,25 +48,39 @@ class _MainNavScreenState extends State<MainNavScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Events',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.campaign),
-            label: 'Announce',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Colors.grey,
+      extendBody: true,
+      body: _widgetOptions[_selectedIndex],
+
+      bottomNavigationBar: CurvedNavigationBar(
+        index: _selectedIndex,
+        height: 60.0,
+        color: Color.fromARGB(40, 143, 30, 41),
+        buttonBackgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Colors.transparent,
+        animationCurve: Curves.easeInOut,
+        animationDuration: const Duration(milliseconds: 400),
         onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
+        letIndexChange: (index) => true,
+        items: List.generate(icons.length, (index) {
+          bool isSelected = index == _selectedIndex;
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icons[index],
+                size: isSelected ? 26 : 24,
+                color: isSelected ? Colors.white : Colors.black54,
+              ),
+              const SizedBox(height: 2),
+              if (!isSelected)
+                Text(
+                  labels[index],
+                  style: const TextStyle(fontSize: 9, color: Colors.black54),
+                ),
+            ],
+          );
+        }),
       ),
     );
   }

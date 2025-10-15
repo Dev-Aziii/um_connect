@@ -211,7 +211,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12,
-                                color: Theme.of(context).colorScheme.secondary,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                             ),
                           ),
