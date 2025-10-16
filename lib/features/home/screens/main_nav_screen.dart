@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/material.dart';
 import 'package:um_connect/features/announcements/screens/announcements_list_screen.dart';
 import 'package:um_connect/features/events/screens/events_list_screen.dart';
 import 'package:um_connect/features/home/screens/home_screen.dart';
@@ -23,13 +23,11 @@ class _MainNavScreenState extends State<MainNavScreen> {
   ];
 
   final List<IconData> icons = [
-    Icons.home,
-    Icons.calendar_today,
-    Icons.campaign,
-    Icons.person,
+    Icons.home_outlined,
+    Icons.celebration_outlined,
+    Icons.campaign_outlined,
+    Icons.person_outline,
   ];
-
-  final List<String> labels = ['Home', 'Events', 'Announcements', 'Profile'];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -42,10 +40,9 @@ class _MainNavScreenState extends State<MainNavScreen> {
     return Scaffold(
       extendBody: true,
       body: _widgetOptions[_selectedIndex],
-
       bottomNavigationBar: CurvedNavigationBar(
         index: _selectedIndex,
-        height: 70.0, // ⬆️ Slightly taller bar
+        height: 65.0,
         color: Theme.of(context).primaryColor,
         buttonBackgroundColor: Theme.of(context).primaryColor,
         backgroundColor: Colors.transparent,
@@ -54,28 +51,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
         onTap: _onItemTapped,
         letIndexChange: (index) => true,
         items: List.generate(icons.length, (index) {
-          bool isSelected = index == _selectedIndex;
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icons[index],
-                size: isSelected ? 30 : 28, // ⬆️ Bigger icons
-                color: Colors.white,
-              ),
-              const SizedBox(height: 4),
-              if (!isSelected)
-                Text(
-                  labels[index],
-                  style: const TextStyle(
-                    fontSize: 11, // ⬆️ Slightly bigger label
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-            ],
-          );
+          return Icon(icons[index], size: 26, color: Colors.white);
         }),
       ),
     );

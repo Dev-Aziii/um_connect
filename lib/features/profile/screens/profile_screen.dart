@@ -7,17 +7,15 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch the auth provider to get the current user's data
     final userAsyncValue = ref.watch(authStateChangesProvider);
     final user = userAsyncValue.value;
 
     return Scaffold(
-      // The background color is handled by the global theme
       body: user == null
-          // Show a loader if user data isn't available yet
           ? const Center(child: CircularProgressIndicator())
           : ListView(
-              padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
+              // Added top padding for better spacing
+              padding: const EdgeInsets.fromLTRB(16.0, 40.0, 16.0, 16.0),
               children: [
                 // --- User Header ---
                 Container(
@@ -46,7 +44,6 @@ class ProfileScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        // Display the user's email
                         user.email ?? 'No email available',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
@@ -118,25 +115,24 @@ class ProfileScreen extends ConsumerWidget {
 
                 const SizedBox(height: 32),
 
-                // --- Logout Button ---
-                ElevatedButton.icon(
+                OutlinedButton.icon(
                   icon: const Icon(Icons.logout),
                   label: const Text('Logout'),
                   onPressed: () {
-                    // Call the signOut method from the auth repository
                     ref.read(authRepositoryProvider).signOut();
                   },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: const Color.fromARGB(64, 219, 82, 82),
-                    side: const BorderSide(color: Colors.red, width: 1.5),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Theme.of(context).primaryColor,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).primaryColor.withOpacity(0.1),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    side: BorderSide(color: Theme.of(context).primaryColor),
                   ),
                 ),
-                const SizedBox(height: 100),
               ],
             ),
     );
