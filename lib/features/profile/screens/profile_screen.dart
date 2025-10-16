@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:um_connect/providers/auth_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -14,7 +15,6 @@ class ProfileScreen extends ConsumerWidget {
       body: user == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
-              // Added top padding for better spacing
               padding: const EdgeInsets.fromLTRB(16.0, 40.0, 16.0, 16.0),
               children: [
                 // --- User Header ---
@@ -50,7 +50,7 @@ class ProfileScreen extends ConsumerWidget {
                         ),
                       ),
                       Text(
-                        'Student', // Placeholder for user role
+                        'Student',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -79,7 +79,7 @@ class ProfileScreen extends ConsumerWidget {
                         icon: Icons.settings_outlined,
                         title: 'Settings',
                         onTap: () {
-                          // TODO: Implement Settings page
+                          context.go('/home/settings');
                         },
                       ),
                     ],

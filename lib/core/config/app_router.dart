@@ -5,6 +5,7 @@ import 'package:um_connect/features/auth/screens/login_screen.dart';
 import 'package:um_connect/features/auth/screens/splash_screen.dart';
 import 'package:um_connect/features/events/screens/event_detail_screen.dart';
 import 'package:um_connect/features/home/screens/main_nav_screen.dart';
+import 'package:um_connect/features/settings/screens/settings_screen.dart';
 import 'package:um_connect/providers/auth_provider.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
@@ -21,7 +22,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/home',
         builder: (context, state) => const MainNavScreen(),
-        // Define sub-routes for detail screens
         routes: [
           GoRoute(
             path: 'event/:id',
@@ -30,13 +30,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               return EventDetailScreen(eventId: eventId);
             },
           ),
-          // --- NEW ROUTE ---
           GoRoute(
             path: 'announcement/:id',
             builder: (context, state) {
               final announcementId = state.pathParameters['id']!;
               return AnnouncementDetailScreen(announcementId: announcementId);
             },
+          ),
+          GoRoute(
+            path: 'settings',
+            builder: (context, state) => const SettingsScreen(),
           ),
         ],
       ),
