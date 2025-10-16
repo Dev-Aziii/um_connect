@@ -20,7 +20,6 @@ class _MainNavScreenState extends State<MainNavScreen> {
     const EventsListScreen(),
     const AnnouncementsScreen(),
     const ProfileScreen(),
-    const Center(child: Text("Settings Screen")),
   ];
 
   final List<IconData> icons = [
@@ -28,16 +27,9 @@ class _MainNavScreenState extends State<MainNavScreen> {
     Icons.calendar_today,
     Icons.campaign,
     Icons.person,
-    Icons.settings,
   ];
 
-  final List<String> labels = [
-    'Home',
-    'Events',
-    'Announce',
-    'Profile',
-    'Settings',
-  ];
+  final List<String> labels = ['Home', 'Events', 'Announcements', 'Profile'];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -53,7 +45,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
 
       bottomNavigationBar: CurvedNavigationBar(
         index: _selectedIndex,
-        height: 60.0,
+        height: 70.0, // ⬆️ Slightly taller bar
         color: Theme.of(context).primaryColor,
         buttonBackgroundColor: Theme.of(context).primaryColor,
         backgroundColor: Colors.transparent,
@@ -69,14 +61,18 @@ class _MainNavScreenState extends State<MainNavScreen> {
             children: [
               Icon(
                 icons[index],
-                size: isSelected ? 26 : 24,
-                color: isSelected ? Colors.white : Colors.white,
+                size: isSelected ? 30 : 28, // ⬆️ Bigger icons
+                color: Colors.white,
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 4),
               if (!isSelected)
                 Text(
                   labels[index],
-                  style: const TextStyle(fontSize: 9, color: Colors.white),
+                  style: const TextStyle(
+                    fontSize: 11, // ⬆️ Slightly bigger label
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
             ],
           );
