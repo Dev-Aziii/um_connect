@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:um_connect/providers/announcements_provider.dart';
+import 'package:um_connect/providers/user_provider.dart';
 
 class AnnouncementsScreen extends ConsumerWidget {
   const AnnouncementsScreen({super.key});
@@ -10,6 +11,8 @@ class AnnouncementsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final announcementsAsyncValue = ref.watch(recentAnnouncementsProvider);
+    final userProfile = ref.watch(userProfileProvider);
+    final userRole = userProfile.value?.role;
 
     return Scaffold(
       appBar: AppBar(title: const Text('All Announcements')),
@@ -24,7 +27,8 @@ class AnnouncementsScreen extends ConsumerWidget {
               await Future.delayed(const Duration(seconds: 1));
             },
             child: ListView.separated(
-              padding: const EdgeInsets.all(16.0),
+              // Apply the same padding as the Events screen to avoid overlap
+              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 120.0),
               itemCount: announcements.length,
               itemBuilder: (context, index) {
                 final announcement = announcements[index];
@@ -98,6 +102,21 @@ class AnnouncementsScreen extends ConsumerWidget {
         error: (err, stack) =>
             Center(child: Text('Could not load announcements: $err')),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: (userRole == 'CSG' || userRole == 'Faculty')
+          ? Padding(
+              padding: const EdgeInsets.only(bottom: 70.0),
+              child: FloatingActionButton.extended(
+                onPressed: () {
+                  context.go('/home/create-announcement');
+                },
+                label: const Text('Create Post'),
+                icon: const Icon(Icons.add),
+                // Added a semi-transparent background to match your events screen
+                backgroundColor: Colors.white.withOpacity(0.6),
+              ),
+            )
+          : null,
     );
   }
 

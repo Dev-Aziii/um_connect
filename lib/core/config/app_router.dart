@@ -7,6 +7,8 @@ import 'package:um_connect/features/events/screens/event_detail_screen.dart';
 import 'package:um_connect/features/home/screens/main_nav_screen.dart';
 import 'package:um_connect/features/settings/screens/settings_screen.dart';
 import 'package:um_connect/providers/auth_provider.dart';
+import 'package:um_connect/features/events/screens/create_event_screen.dart';
+import 'package:um_connect/features/announcements/screens/create_announcement_screen.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateChangesProvider);
@@ -40,6 +42,15 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: 'settings',
             builder: (context, state) => const SettingsScreen(),
+          ),
+          // --- NEW ROUTES ---
+          GoRoute(
+            path: 'create-event',
+            builder: (context, state) => const CreateEventScreen(),
+          ),
+          GoRoute(
+            path: 'create-announcement',
+            builder: (context, state) => const CreateAnnouncementScreen(),
           ),
         ],
       ),

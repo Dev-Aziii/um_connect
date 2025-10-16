@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:um_connect/features/events/models/event_model.dart';
 import 'package:um_connect/providers/events_provider.dart';
+import 'package:um_connect/providers/user_provider.dart';
 
 class EventsListScreen extends ConsumerWidget {
   const EventsListScreen({super.key});
@@ -11,9 +12,10 @@ class EventsListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final allEventsAsyncValue = ref.watch(allUpcomingEventsProvider);
+    final userProfile = ref.watch(userProfileProvider);
+    final userRole = userProfile.value?.role;
 
     return Scaffold(
-      // A simple AppBar is used instead of a SliverAppBar
       appBar: AppBar(title: const Text('All Events')),
       body: allEventsAsyncValue.when(
         data: (events) {
@@ -26,7 +28,7 @@ class EventsListScreen extends ConsumerWidget {
               await Future.delayed(const Duration(seconds: 1));
             },
             child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 120.0),
               itemCount: events.length,
               itemBuilder: (context, index) {
                 final event = events[index];
@@ -40,6 +42,23 @@ class EventsListScreen extends ConsumerWidget {
         error: (err, stack) =>
             Center(child: Text('Could not load events: $err')),
       ),
+
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: (userRole == 'CSG' || userRole == 'Faculty')
+          ? Padding(
+              padding: const EdgeInsets.only(
+                bottom: 70.0,
+              ), 
+              child: FloatingActionButton.extended(
+                onPressed: () {
+                  context.go('/home/create-event');
+                },
+                label: const Text('Create Event'),
+                icon: const Icon(Icons.add),
+                backgroundColor: Colors.white.withOpacity(0.6),
+              ),
+            )
+          : null,
     );
   }
 }
