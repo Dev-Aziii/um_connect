@@ -17,9 +17,9 @@ class MainNavScreen extends StatefulWidget {
 class _MainNavScreenState extends State<MainNavScreen>
     with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
-  late AnimationController _bottomNavAnimationController;
+  late AnimationController _animationController;
+  late Animation<Offset> _appBarAnimation;
   late Animation<Offset> _bottomNavAnimation;
-  final ScrollController _scrollController = ScrollController();
 
   final List<Widget> _widgetOptions = <Widget>[
     const HomeScreen(),
@@ -38,97 +38,105 @@ class _MainNavScreenState extends State<MainNavScreen>
   @override
   void initState() {
     super.initState();
-    _bottomNavAnimationController = AnimationController(
+    _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
 
-    _bottomNavAnimation =
-        Tween<Offset>(begin: Offset.zero, end: const Offset(0, 1)).animate(
-          CurvedAnimation(
-            parent: _bottomNavAnimationController,
-            curve: Curves.easeOut,
-          ),
+    _appBarAnimation =
+        Tween<Offset>(
+          begin: Offset.zero,
+          end: const Offset(0, -1), // Slides up
+        ).animate(
+          CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
         );
-
-    _scrollController.addListener(_scrollListener);
-  }
-
-  void _scrollListener() {
-    if (_scrollController.position.userScrollDirection ==
-        ScrollDirection.reverse) {
-      if (_bottomNavAnimationController.status == AnimationStatus.completed) {
-        return;
-      }
-      _bottomNavAnimationController.forward();
-    } else {
-      if (_bottomNavAnimationController.status == AnimationStatus.dismissed) {
-        return;
-      }
-      _bottomNavAnimationController.reverse();
-    }
+    _bottomNavAnimation =
+        Tween<Offset>(
+          begin: Offset.zero,
+          end: const Offset(0, 1), // Slides down
+        ).animate(
+          CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+        );
   }
 
   @override
   void dispose() {
-    _bottomNavAnimationController.dispose();
-    _scrollController.removeListener(_scrollListener);
-    _scrollController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
   void _onItemTapped(int index) {
-    if (_selectedIndex == index && _scrollController.hasClients) {
-      _scrollController.animateTo(
-        0,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
+    // When switching tabs, show the bars again
+    _animationController.reverse();
     setState(() {
       _selectedIndex = index;
     });
   }
 
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification is UserScrollNotification) {
+      final UserScrollNotification userScroll = notification;
+      switch (userScroll.direction) {
+        case ScrollDirection.forward: // Scrolling up
+          if (_animationController.status == AnimationStatus.completed) {
+            _animationController.reverse();
+          }
+          break;
+        case ScrollDirection.reverse: // Scrolling down
+          if (_animationController.status == AnimationStatus.dismissed) {
+            _animationController.forward();
+          }
+          break;
+        case ScrollDirection.idle:
+          break;
+      }
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       drawer: const AppDrawer(),
-      body: NestedScrollView(
-        controller: _scrollController,
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              title: Text(_widgetTitles[_selectedIndex]),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.account_circle_outlined),
-                  onPressed: () {
-                    context.push('/profile');
-                  },
-                ),
-              ],
-              floating: true,
-              snap: true,
+      // --- BODY MODIFIED ---
+      // The body is now a Stack to layer the content and the AppBar.
+      body: Stack(
+        children: [
+          // Layer 1: The Page Content
+          NotificationListener<ScrollNotification>(
+            onNotification: _handleScrollNotification,
+            child: _widgetOptions[_selectedIndex],
+          ),
+          // Layer 2: The Animated AppBar
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SlideTransition(
+              position: _appBarAnimation,
+              child: AppBar(
+                title: Text(_widgetTitles[_selectedIndex]),
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.account_circle_outlined),
+                    onPressed: () {
+                      context.push('/profile');
+                    },
+                  ),
+                ],
+              ),
             ),
-          ];
-        },
-        body: _widgetOptions[_selectedIndex],
+          ),
+        ],
       ),
       bottomNavigationBar: SlideTransition(
         position: _bottomNavAnimation,
-        // --- MODIFIED SECTION ---
-        // Wrap the BottomNavigationBar in a Container to add a top border
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white, // Set the background to white
+            color: Colors.white,
             border: Border(
-              top: BorderSide(
-                color: Colors
-                    .grey
-                    .shade300, // This creates the shadow-like outline
-                width: 1.0,
-              ),
+              top: BorderSide(color: Colors.grey.shade300, width: 1.0),
             ),
           ),
           child: BottomNavigationBar(
@@ -161,8 +169,6 @@ class _MainNavScreenState extends State<MainNavScreen>
             unselectedItemColor: Colors.grey,
             showSelectedLabels: false,
             showUnselectedLabels: false,
-            // Make the navigation bar's own background transparent and remove its elevation
-            // so the container's decoration shows through.
             backgroundColor: Colors.transparent,
             elevation: 0,
           ),

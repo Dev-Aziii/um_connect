@@ -14,6 +14,8 @@ class EventsListScreen extends ConsumerWidget {
     final allEventsAsyncValue = ref.watch(allUpcomingEventsProvider);
     final userProfile = ref.watch(userProfileProvider);
     final userRole = userProfile.value?.role;
+    // Calculate top padding to avoid the AppBar and status bar
+    final topPadding = MediaQuery.of(context).padding.top + kToolbarHeight;
 
     return allEventsAsyncValue.when(
       data: (events) {
@@ -25,7 +27,8 @@ class EventsListScreen extends ConsumerWidget {
           child: Stack(
             children: [
               ListView.builder(
-                padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 120.0),
+                // --- PADDING MODIFIED ---
+                padding: EdgeInsets.fromLTRB(8.0, topPadding + 8.0, 8.0, 120.0),
                 itemCount: events.length,
                 itemBuilder: (context, index) {
                   final event = events[index];

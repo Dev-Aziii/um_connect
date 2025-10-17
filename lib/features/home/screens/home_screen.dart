@@ -14,6 +14,8 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final eventsAsync = ref.watch(upcomingEventsProvider);
     final announcementsAsync = ref.watch(recentAnnouncementsProvider);
+    // Calculate top padding to avoid the AppBar and status bar
+    final topPadding = MediaQuery.of(context).padding.top + kToolbarHeight;
 
     return (eventsAsync.isLoading || announcementsAsync.isLoading)
         ? const Center(child: CircularProgressIndicator())
@@ -24,6 +26,7 @@ class HomeScreen extends ConsumerWidget {
             eventsAsync.value ?? [],
             announcementsAsync.value ?? [],
             ref,
+            topPadding,
           );
   }
 
@@ -32,6 +35,7 @@ class HomeScreen extends ConsumerWidget {
     List events,
     List announcements,
     WidgetRef ref,
+    double topPadding,
   ) {
     final combinedList = [...events, ...announcements];
     combinedList.sort((a, b) => b.date.compareTo(a.date));
@@ -46,7 +50,8 @@ class HomeScreen extends ConsumerWidget {
         ref.invalidate(recentAnnouncementsProvider);
       },
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 100.0),
+        // --- PADDING MODIFIED ---
+        padding: EdgeInsets.fromLTRB(8.0, topPadding + 8.0, 8.0, 100.0),
         children: [
           // --- Upcoming Events Section ---
           _buildSectionHeader(context, 'Upcoming Events'),
