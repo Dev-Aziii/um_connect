@@ -14,7 +14,6 @@ class EventsListScreen extends ConsumerWidget {
     final allEventsAsyncValue = ref.watch(allUpcomingEventsProvider);
     final userProfile = ref.watch(userProfileProvider);
     final userRole = userProfile.value?.role;
-    // Calculate top padding to avoid the AppBar and status bar
     final topPadding = MediaQuery.of(context).padding.top + kToolbarHeight;
 
     return allEventsAsyncValue.when(
@@ -27,7 +26,6 @@ class EventsListScreen extends ConsumerWidget {
           child: Stack(
             children: [
               ListView.builder(
-                // --- PADDING MODIFIED ---
                 padding: EdgeInsets.fromLTRB(8.0, topPadding + 8.0, 8.0, 120.0),
                 itemCount: events.length,
                 itemBuilder: (context, index) {
@@ -62,7 +60,7 @@ class EventsListScreen extends ConsumerWidget {
                     onPressed: () => context.go('/home/create-event'),
                     label: const Text('Create Event'),
                     icon: const Icon(Icons.add),
-                    backgroundColor: Colors.white.withOpacity(0.9),
+                    // No local styling needed; inherits from theme
                   ),
                 ),
             ],
@@ -91,11 +89,15 @@ class EventsListScreen extends ConsumerWidget {
   Widget _buildFooterItem(BuildContext context, IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, size: 14, color: Colors.grey.shade600),
+        Icon(
+          icon,
+          size: 14,
+          color: Theme.of(context).textTheme.bodySmall?.color,
+        ),
         const SizedBox(width: 6),
         Text(
           text,
-          style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+          style: Theme.of(context).textTheme.bodySmall,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

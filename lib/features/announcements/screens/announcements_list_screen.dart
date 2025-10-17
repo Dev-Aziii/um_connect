@@ -14,7 +14,6 @@ class AnnouncementsScreen extends ConsumerWidget {
     final announcementsAsyncValue = ref.watch(recentAnnouncementsProvider);
     final userProfile = ref.watch(userProfileProvider);
     final userRole = userProfile.value?.role;
-    // Calculate top padding to avoid the AppBar and status bar
     final topPadding = MediaQuery.of(context).padding.top + kToolbarHeight;
 
     return announcementsAsyncValue.when(
@@ -27,7 +26,6 @@ class AnnouncementsScreen extends ConsumerWidget {
           child: Stack(
             children: [
               ListView.builder(
-                // --- PADDING MODIFIED ---
                 padding: EdgeInsets.fromLTRB(8.0, topPadding + 8.0, 8.0, 120.0),
                 itemCount: announcements.length,
                 itemBuilder: (context, index) {
@@ -53,7 +51,7 @@ class AnnouncementsScreen extends ConsumerWidget {
                     onPressed: () => context.go('/home/create-announcement'),
                     label: const Text('Create Post'),
                     icon: const Icon(Icons.add),
-                    backgroundColor: Colors.white.withOpacity(0.9),
+                    // No local styling needed; inherits from theme
                   ),
                 ),
             ],
@@ -72,12 +70,12 @@ class AnnouncementsScreen extends ConsumerWidget {
         Icon(
           Icons.calendar_today_outlined,
           size: 14,
-          color: Colors.grey.shade600,
+          color: Theme.of(context).textTheme.bodySmall?.color,
         ),
         const SizedBox(width: 6),
         Text(
           'Posted on ${DateFormat.yMMMd().format(date)}',
-          style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+          style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
     );

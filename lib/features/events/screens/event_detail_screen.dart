@@ -10,24 +10,11 @@ class EventDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final eventAsyncValue = ref.watch(eventByIdProvider(eventId));
-    final ScrollController scrollController = ScrollController();
-
-    // Scroll to bottom after the first frame
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (scrollController.hasClients) {
-        scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 1300),
-          curve: Curves.easeInOut,
-        );
-      }
-    });
 
     return Scaffold(
       body: eventAsyncValue.when(
         data: (event) {
           return SingleChildScrollView(
-            controller: scrollController,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -41,11 +28,11 @@ class EventDetailScreen extends ConsumerWidget {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Container(
                         height: 300,
-                        color: Colors.grey[400],
-                        child: const Icon(
+                        color: Theme.of(context).cardColor.withOpacity(0.1),
+                        child: Icon(
                           Icons.broken_image,
                           size: 100,
-                          color: Colors.grey,
+                          color: Theme.of(context).disabledColor,
                         ),
                       ),
                     ),
@@ -55,56 +42,47 @@ class EventDetailScreen extends ConsumerWidget {
                 // Details Card
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
-                          blurRadius: 15,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          event.title,
-                          style: Theme.of(context).textTheme.headlineSmall
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 24),
-                        _buildInfoCard(
-                          context,
-                          icon: Icons.calendar_today_outlined,
-                          title: 'Date & Time',
-                          subtitle: DateFormat.yMMMMd().add_jm().format(
-                            event.date,
+                  child: Card(
+                    // Card styling is now inherited from AppTheme
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            event.title,
+                            style: Theme.of(context).textTheme.headlineSmall
+                                ?.copyWith(fontWeight: FontWeight.bold),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        _buildInfoCard(
-                          context,
-                          icon: Icons.location_on_outlined,
-                          title: 'Venue',
-                          subtitle: event.venue,
-                        ),
-                        const SizedBox(height: 16),
-                        _buildInfoCard(
-                          context,
-                          icon: Icons.info_outline_rounded,
-                          title: 'About this Event',
-                          subtitle: event.detail,
-                        ),
-                        const SizedBox(height: 24),
-                      ],
+                          const SizedBox(height: 24),
+                          _buildInfoCard(
+                            context,
+                            icon: Icons.calendar_today_outlined,
+                            title: 'Date & Time',
+                            subtitle: DateFormat.yMMMMd().add_jm().format(
+                              event.date,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          _buildInfoCard(
+                            context,
+                            icon: Icons.location_on_outlined,
+                            title: 'Venue',
+                            subtitle: event.venue,
+                          ),
+                          const SizedBox(height: 16),
+                          _buildInfoCard(
+                            context,
+                            icon: Icons.info_outline_rounded,
+                            title: 'About this Event',
+                            subtitle: event.detail,
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                //  const SizedBox(height: 120), // Padding for bottom button
               ],
             ),
           );
@@ -112,15 +90,12 @@ class EventDetailScreen extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => Center(child: Text('Error: $err')),
       ),
-
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white.withOpacity(0.6),
+        // FAB styling is now inherited from AppTheme
         onPressed: () => Navigator.of(context).pop(),
         child: const Icon(Icons.arrow_back),
       ),
-
       bottomNavigationBar: Container(
-        color: Colors.white.withOpacity(0.1),
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton.icon(
           icon: const Icon(Icons.calendar_month_outlined),
@@ -148,17 +123,17 @@ class EventDetailScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.withOpacity(0.2)),
+        border: Border.all(color: Theme.of(context).dividerColor),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
             radius: 20,
-            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
-            child: Icon(icon, color: Colors.white, size: 20),
+            backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+            child: Icon(icon, color: Theme.of(context).primaryColor, size: 20),
           ),
           const SizedBox(width: 16),
           Expanded(

@@ -20,11 +20,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           _buildSectionHeader(context, 'General'),
           Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: Colors.grey.shade200),
-            ),
+            // Styling is now inherited from AppTheme
             child: Column(
               children: [
                 SwitchListTile(
@@ -44,11 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 24),
           _buildSectionHeader(context, 'Appearance'),
           Card(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: Colors.grey.shade200),
-            ),
+            // Styling is now inherited from AppTheme
             child: Column(
               children: [
                 SwitchListTile(
@@ -77,7 +69,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         title.toUpperCase(),
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
           fontWeight: FontWeight.bold,
-          color: Colors.grey.shade600,
+          color: Theme.of(context).hintColor,
         ),
       ),
     );

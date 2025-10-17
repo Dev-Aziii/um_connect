@@ -14,35 +14,20 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final eventsAsync = ref.watch(upcomingEventsProvider);
     final announcementsAsync = ref.watch(recentAnnouncementsProvider);
-    // Calculate top padding to avoid the AppBar and status bar
     final topPadding = MediaQuery.of(context).padding.top + kToolbarHeight;
 
-    return (eventsAsync.isLoading || announcementsAsync.isLoading)
-        ? const Center(child: CircularProgressIndicator())
-        : (eventsAsync.hasError || announcementsAsync.hasError)
-        ? const Center(child: Text('Could not load feed.'))
-        : _buildCombinedFeed(
-            context,
-            eventsAsync.value ?? [],
-            announcementsAsync.value ?? [],
-            ref,
-            topPadding,
-          );
-  }
-
-  Widget _buildCombinedFeed(
-    BuildContext context,
-    List events,
-    List announcements,
-    WidgetRef ref,
-    double topPadding,
-  ) {
-    final combinedList = [...events, ...announcements];
-    combinedList.sort((a, b) => b.date.compareTo(a.date));
-
-    if (combinedList.isEmpty) {
-      return const Center(child: Text('No posts yet.'));
+    // A single loading state for the whole screen
+    if (eventsAsync.isLoading || announcementsAsync.isLoading) {
+      return const Center(child: CircularProgressIndicator());
     }
+
+    // A single error state
+    if (eventsAsync.hasError || announcementsAsync.hasError) {
+      return const Center(child: Text('Could not load feed.'));
+    }
+
+    // Get the data now that we know it's available
+    final announcements = announcementsAsync.value ?? [];
 
     return RefreshIndicator(
       onRefresh: () async {
@@ -50,30 +35,37 @@ class HomeScreen extends ConsumerWidget {
         ref.invalidate(recentAnnouncementsProvider);
       },
       child: ListView(
-        // --- PADDING MODIFIED ---
         padding: EdgeInsets.fromLTRB(8.0, topPadding + 8.0, 8.0, 100.0),
         children: [
-          // --- Upcoming Events Section ---
           _buildSectionHeader(context, 'Upcoming Events'),
           const SizedBox(height: 12),
           const UpcomingEventsCarousel(),
           const SizedBox(height: 24),
-
-          // --- Recent Announcements Feed ---
           _buildSectionHeader(context, 'Recent Announcements'),
           const SizedBox(height: 12),
-          ...announcements.map((announcement) {
-            return PostCard(
-              category: announcement.category.toUpperCase(),
-              categoryIcon: _getIconForCategory(announcement.category),
-              title: announcement.title,
-              footerContent: _buildAnnouncementFooter(
-                context,
-                announcement.date,
+          // Check if announcements list is empty
+          if (announcements.isEmpty)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.all(32.0),
+                child: Text('No recent announcements.'),
               ),
-              onTap: () => context.go('/home/announcement/${announcement.id}'),
-            );
-          }).toList(),
+            )
+          else
+            // Build the list of PostCards for announcements
+            ...announcements.map((announcement) {
+              return PostCard(
+                category: announcement.category.toUpperCase(),
+                categoryIcon: _getIconForCategory(announcement.category),
+                title: announcement.title,
+                footerContent: _buildAnnouncementFooter(
+                  context,
+                  announcement.date,
+                ),
+                onTap: () =>
+                    context.go('/home/announcement/${announcement.id}'),
+              );
+            }).toList(),
         ],
       ),
     );
@@ -84,11 +76,9 @@ class HomeScreen extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.black87,
-        ),
+        style: Theme.of(
+          context,
+        ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -99,12 +89,12 @@ class HomeScreen extends ConsumerWidget {
         Icon(
           Icons.calendar_today_outlined,
           size: 14,
-          color: Colors.grey.shade600,
+          color: Theme.of(context).textTheme.bodySmall?.color,
         ),
         const SizedBox(width: 6),
         Text(
           'Posted on ${DateFormat.yMMMd().format(date)}',
-          style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+          style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
     );

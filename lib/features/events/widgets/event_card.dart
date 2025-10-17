@@ -10,23 +10,20 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // This Card now inherits its style from the AppTheme
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       clipBehavior: Clip.antiAlias,
-      elevation: 4,
-      shadowColor: Colors.black.withOpacity(0.2),
       child: InkWell(
         onTap: () => context.go('/home/event/${event.id}'),
         child: Stack(
-          fit: StackFit.expand, // Make stack children fill the card
+          fit: StackFit.expand,
           children: [
-            // Layer 1: Background Image
             Image.network(
               event.imageUrl,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  color: Colors.grey[300],
+                  color: Theme.of(context).colorScheme.surface.withOpacity(0.1),
                   child: const Icon(
                     Icons.broken_image,
                     color: Colors.grey,
@@ -35,8 +32,6 @@ class EventCard extends StatelessWidget {
                 );
               },
             ),
-
-            // Layer 2: Gradient Overlay
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -47,12 +42,10 @@ class EventCard extends StatelessWidget {
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  stops: const [0.5, 0.7, 1.0], // Control gradient start
+                  stops: const [0.5, 0.7, 1.0],
                 ),
               ),
             ),
-
-            // Layer 3: Text Content
             Positioned(
               bottom: 12,
               left: 12,

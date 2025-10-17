@@ -85,22 +85,15 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
       setState(() => _isLoading = true);
 
       try {
-        // --- MODIFIED CALL ---
-        // 1. Get the title from the controller to use as the filename.
         final String eventTitle = _titleController.text.trim();
-
-        // 2. Upload image to ImageKit with the specified folder and filename.
         final imageUrl = await ImageUploadService().uploadImage(
           _selectedImage!,
           folderPath: '/um_connect/events',
           fileName: eventTitle,
         );
 
-        if (imageUrl == null) {
-          throw Exception('Image upload failed.');
-        }
+        if (imageUrl == null) throw Exception('Image upload failed.');
 
-        // 3. Save event data to Firestore
         await ref
             .read(eventsRepositoryProvider)
             .createEvent(
@@ -111,7 +104,6 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
               imageUrl: imageUrl,
             );
 
-        // 4. Invalidate providers to refetch lists
         ref.invalidate(upcomingEventsProvider);
         ref.invalidate(allUpcomingEventsProvider);
 
@@ -119,7 +111,7 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Event created successfully!')),
           );
-          context.pop(); // Go back to the previous screen
+          context.pop();
         }
       } catch (e) {
         if (mounted) {
@@ -128,9 +120,7 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
           ).showSnackBar(SnackBar(content: Text('Failed to create event: $e')));
         }
       } finally {
-        if (mounted) {
-          setState(() => _isLoading = false);
-        }
+        if (mounted) setState(() => _isLoading = false);
       }
     }
   }
@@ -144,7 +134,6 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16.0),
           children: [
-            // --- Image Picker ---
             GestureDetector(
               onTap: _pickImage,
               child: Container(
@@ -153,7 +142,7 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade400),
+                  border: Border.all(color: Theme.of(context).dividerColor),
                 ),
                 child: _selectedImage != null
                     ? ClipRRect(
@@ -163,45 +152,40 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
                           fit: BoxFit.cover,
                         ),
                       )
-                    : const Column(
+                    : Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
                             Icons.add_a_photo_outlined,
                             size: 40,
-                            color: Colors.grey,
+                            color: Theme.of(context).hintColor,
                           ),
-                          SizedBox(height: 8),
-                          Text('Upload Event Poster'),
+                          const SizedBox(height: 8),
+                          const Text('Upload Event Poster'),
                         ],
                       ),
               ),
             ),
             const SizedBox(height: 24),
-            // --- Form Fields ---
             TextFormField(
               controller: _titleController,
               decoration: const InputDecoration(labelText: 'Event Title'),
-              validator: (value) =>
-                  value!.isEmpty ? 'Please enter a title' : null,
+              validator: (v) => v!.isEmpty ? 'Please enter a title' : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _detailController,
               decoration: const InputDecoration(labelText: 'Event Details'),
               maxLines: 5,
-              validator: (value) =>
-                  value!.isEmpty ? 'Please enter details' : null,
+              validator: (v) => v!.isEmpty ? 'Please enter details' : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _venueController,
               decoration: const InputDecoration(labelText: 'Venue'),
-              validator: (value) =>
-                  value!.isEmpty ? 'Please enter a venue' : null,
+              validator: (v) => v!.isEmpty ? 'Please enter a venue' : null,
             ),
             const SizedBox(height: 16),
-            // --- Date Picker ---
             ListTile(
               leading: const Icon(Icons.calendar_today),
               title: const Text('Date & Time'),
@@ -212,17 +196,13 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
               ),
               onTap: _pickDate,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-                side: BorderSide(color: Colors.grey.shade400),
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(color: Theme.of(context).dividerColor),
               ),
             ),
             const SizedBox(height: 32),
-            // --- Submit Button ---
             ElevatedButton(
               onPressed: _isLoading ? null : _submitEvent,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
               child: _isLoading
                   ? const SizedBox(
                       height: 24,

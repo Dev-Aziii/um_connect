@@ -16,8 +16,7 @@ class AnnouncementDetailScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Announcement'),
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
+        // AppBar styling is inherited from AppTheme
       ),
       body: announcementAsyncValue.when(
         data: (announcement) {
@@ -44,7 +43,7 @@ class AnnouncementDetailScreen extends ConsumerWidget {
                       child: Text(
                         'Posted on ${DateFormat.yMMMMd().format(announcement.date)}',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey[600],
+                          color: Theme.of(context).hintColor,
                         ),
                       ),
                     ),
@@ -58,7 +57,11 @@ class AnnouncementDetailScreen extends ConsumerWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Divider(height: 32, thickness: 1.5),
+                Divider(
+                  height: 32,
+                  thickness: 1.5,
+                  color: Theme.of(context).dividerColor,
+                ),
                 // Content
                 Text(
                   announcement.content,

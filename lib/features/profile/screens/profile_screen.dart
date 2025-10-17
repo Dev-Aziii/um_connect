@@ -18,42 +18,36 @@ class ProfileScreen extends ConsumerWidget {
           : ListView(
               padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 100.0),
               children: [
-                Container(
-                  padding: const EdgeInsets.all(24.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      const CircleAvatar(
-                        radius: 40,
-                        backgroundColor: Colors.black12,
-                        child: Icon(
-                          Icons.person_outline,
-                          size: 40,
-                          color: Colors.grey,
+                // --- User Header ---
+                Card(
+                  // This card has a local style override for a different look
+                  elevation: 2,
+                  shadowColor: Colors.black.withOpacity(0.05),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      children: [
+                        const CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Colors.black12,
+                          child: Icon(
+                            Icons.person_outline,
+                            size: 40,
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        user.email ?? 'No email available',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(height: 16),
+                        Text(
+                          user.email ?? 'No email available',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
-                      ),
-                      Text(
-                        'Student', // Placeholder for user role
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
+                        Text(
+                          'Student', // Placeholder for user role
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -61,13 +55,7 @@ class ProfileScreen extends ConsumerWidget {
                 // --- Menu Options ---
                 _buildSectionHeader(context, 'Account'),
                 Card(
-                  // --- BACKGROUND COLOR ADDED ---
-                  color: Colors.white,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(color: Colors.grey.shade200),
-                  ),
+                  // Styling is now inherited from AppTheme
                   child: Column(
                     children: [
                       _buildProfileMenuOption(
@@ -88,13 +76,7 @@ class ProfileScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
                 _buildSectionHeader(context, 'Support'),
                 Card(
-                  // --- BACKGROUND COLOR ADDED ---
-                  color: Colors.white,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(color: Colors.grey.shade200),
-                  ),
+                  // Styling is now inherited from AppTheme
                   child: Column(
                     children: [
                       _buildProfileMenuOption(
@@ -117,17 +99,7 @@ class ProfileScreen extends ConsumerWidget {
                   onPressed: () {
                     ref.read(authRepositoryProvider).signOut();
                   },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Theme.of(context).primaryColor,
-                    backgroundColor: Theme.of(
-                      context,
-                    ).primaryColor.withOpacity(0.1),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    side: BorderSide(color: Theme.of(context).primaryColor),
-                  ),
+                  // No style needed; it inherits from OutlinedButtonThemeData
                 ),
               ],
             ),
@@ -141,7 +113,7 @@ class ProfileScreen extends ConsumerWidget {
         title.toUpperCase(),
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
           fontWeight: FontWeight.bold,
-          color: Colors.grey.shade600,
+          color: Theme.of(context).hintColor,
         ),
       ),
     );
@@ -152,6 +124,7 @@ class ProfileScreen extends ConsumerWidget {
     required String title,
     required VoidCallback onTap,
   }) {
+    // ListTile now inherits its icon color from the global theme
     return ListTile(
       leading: Icon(icon),
       title: Text(title),

@@ -44,17 +44,11 @@ class _MainNavScreenState extends State<MainNavScreen>
     );
 
     _appBarAnimation =
-        Tween<Offset>(
-          begin: Offset.zero,
-          end: const Offset(0, -1), // Slides up
-        ).animate(
+        Tween<Offset>(begin: Offset.zero, end: const Offset(0, -1)).animate(
           CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
         );
     _bottomNavAnimation =
-        Tween<Offset>(
-          begin: Offset.zero,
-          end: const Offset(0, 1), // Slides down
-        ).animate(
+        Tween<Offset>(begin: Offset.zero, end: const Offset(0, 1)).animate(
           CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
         );
   }
@@ -66,7 +60,6 @@ class _MainNavScreenState extends State<MainNavScreen>
   }
 
   void _onItemTapped(int index) {
-    // When switching tabs, show the bars again
     _animationController.reverse();
     setState(() {
       _selectedIndex = index;
@@ -77,12 +70,12 @@ class _MainNavScreenState extends State<MainNavScreen>
     if (notification is UserScrollNotification) {
       final UserScrollNotification userScroll = notification;
       switch (userScroll.direction) {
-        case ScrollDirection.forward: // Scrolling up
+        case ScrollDirection.forward:
           if (_animationController.status == AnimationStatus.completed) {
             _animationController.reverse();
           }
           break;
-        case ScrollDirection.reverse: // Scrolling down
+        case ScrollDirection.reverse:
           if (_animationController.status == AnimationStatus.dismissed) {
             _animationController.forward();
           }
@@ -99,16 +92,12 @@ class _MainNavScreenState extends State<MainNavScreen>
     return Scaffold(
       extendBody: true,
       drawer: const AppDrawer(),
-      // --- BODY MODIFIED ---
-      // The body is now a Stack to layer the content and the AppBar.
       body: Stack(
         children: [
-          // Layer 1: The Page Content
           NotificationListener<ScrollNotification>(
             onNotification: _handleScrollNotification,
             child: _widgetOptions[_selectedIndex],
           ),
-          // Layer 2: The Animated AppBar
           Positioned(
             top: 0,
             left: 0,
@@ -134,9 +123,11 @@ class _MainNavScreenState extends State<MainNavScreen>
         position: _bottomNavAnimation,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
             border: Border(
-              top: BorderSide(color: Colors.grey.shade300, width: 1.0),
+              top: BorderSide(
+                color: Theme.of(context).dividerColor,
+                width: 1.0,
+              ),
             ),
           ),
           child: BottomNavigationBar(
@@ -164,13 +155,8 @@ class _MainNavScreenState extends State<MainNavScreen>
             ],
             currentIndex: _selectedIndex,
             onTap: _onItemTapped,
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: Theme.of(context).primaryColor,
-            unselectedItemColor: Colors.grey,
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
+            // Use the unselected color from the global theme
+            unselectedItemColor: Theme.of(context).unselectedWidgetColor,
           ),
         ),
       ),

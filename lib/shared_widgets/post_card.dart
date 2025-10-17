@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// A reusable card widget to display content in a feed, similar to a Reddit post.
 class PostCard extends StatelessWidget {
   final String category;
   final IconData categoryIcon;
@@ -21,37 +20,34 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // This Card now inherits its style from the AppTheme
     return Card(
-      color: Colors.white,
-      elevation: 2,
-      shadowColor: Colors.black.withOpacity(0.1),
       margin: const EdgeInsets.only(bottom: 12.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- Card Header ---
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
               child: Row(
                 children: [
-                  Icon(categoryIcon, size: 16, color: Colors.grey.shade600),
+                  Icon(
+                    categoryIcon,
+                    size: 16,
+                    color: Theme.of(context).textTheme.bodySmall?.color,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     category,
-                    style: TextStyle(
-                      fontSize: 12,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade600,
                     ),
                   ),
                 ],
               ),
             ),
-            // --- Card Title ---
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: Text(
@@ -63,12 +59,10 @@ class PostCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            // --- Optional Body Content (like an image) ---
             if (bodyContent != null) ...[
               const SizedBox(height: 12),
               bodyContent!,
             ],
-            // --- Card Footer ---
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
               child: footerContent,
