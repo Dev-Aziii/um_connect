@@ -4,14 +4,13 @@ import 'package:um_connect/features/events/models/event_model.dart';
 class EventsRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  /// Fetches a limited list of upcoming events for the home screen.
   Future<List<Event>> getUpcomingEvents() async {
     try {
       final snapshot = await _firestore
           .collection('events')
           .where('date', isGreaterThanOrEqualTo: Timestamp.now())
           .orderBy('date', descending: false)
-          .limit(10) // Limits to 10 for the home screen carousel
+          .limit(10)
           .get();
 
       return snapshot.docs.map((doc) => Event.fromFirestore(doc)).toList();
@@ -21,16 +20,13 @@ class EventsRepository {
     }
   }
 
-  // --- NEW METHOD ---
-  /// Fetches a full, unlimited list of all upcoming events.
   Future<List<Event>> getAllUpcomingEvents() async {
     try {
       final snapshot = await _firestore
           .collection('events')
           .where('date', isGreaterThanOrEqualTo: Timestamp.now())
-          .orderBy('date', descending: false) // No limit, gets all documents
+          .orderBy('date', descending: false)
           .get();
-
       return snapshot.docs.map((doc) => Event.fromFirestore(doc)).toList();
     } catch (e) {
       print('Error fetching all upcoming events: $e');
@@ -38,7 +34,6 @@ class EventsRepository {
     }
   }
 
-  /// Fetches a single event document by its ID.
   Future<Event> getEventById(String eventId) async {
     try {
       final doc = await _firestore.collection('events').doc(eventId).get();
@@ -46,6 +41,29 @@ class EventsRepository {
     } catch (e) {
       print('Error fetching event by ID: $e');
       rethrow;
+    }
+  }
+
+  // --- NEW METHOD ---
+  /// Adds a new event document to the 'events' collection in Firestore.
+  Future<void> createEvent({
+    required String title,
+    required String detail,
+    required String venue,
+    required DateTime date,
+    required String imageUrl,
+  }) async {
+    try {
+      await _firestore.collection('events').add({
+        'title': title,
+        'detail': detail,
+        'venue': venue,
+        'date': Timestamp.fromDate(date),
+        'imageUrl': imageUrl,
+      });
+    } catch (e) {
+      print('Error creating event: $e');
+      rethrow; // Rethrow to be caught by the UI
     }
   }
 }
