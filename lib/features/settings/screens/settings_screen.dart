@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:um_connect/providers/theme_provider.dart';
 
-class SettingsScreen extends StatefulWidget {
+// Convert to a ConsumerStatefulWidget to manage state and listen to providers
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  // Local state for notification preference
   bool _notificationsEnabled = true;
-  bool _darkModeEnabled = false;
 
   @override
   Widget build(BuildContext context) {
+    // Get the current theme mode from the provider
+    final currentThemeMode = ref.watch(themeProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
@@ -20,7 +26,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           _buildSectionHeader(context, 'General'),
           Card(
-            // Styling is now inherited from AppTheme
             child: Column(
               children: [
                 SwitchListTile(
@@ -30,7 +35,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onChanged: (bool value) {
                     setState(() {
                       _notificationsEnabled = value;
-                      // TODO: Save notification preference
                     });
                   },
                 ),
@@ -40,18 +44,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 24),
           _buildSectionHeader(context, 'Appearance'),
           Card(
-            // Styling is now inherited from AppTheme
             child: Column(
               children: [
                 SwitchListTile(
                   title: const Text('Dark Mode'),
                   secondary: const Icon(Icons.dark_mode_outlined),
-                  value: _darkModeEnabled,
+                  // The value of the switch is now determined by the theme provider
+                  value: currentThemeMode == ThemeMode.dark,
                   onChanged: (bool value) {
-                    setState(() {
-                      _darkModeEnabled = value;
-                      // TODO: Implement theme switching logic
-                    });
+                    // Call the method on our notifier to toggle the theme
+                    ref.read(themeProvider.notifier).toggleTheme();
                   },
                 ),
               ],

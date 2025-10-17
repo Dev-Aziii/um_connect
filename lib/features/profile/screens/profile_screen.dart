@@ -18,9 +18,7 @@ class ProfileScreen extends ConsumerWidget {
           : ListView(
               padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 100.0),
               children: [
-                // --- User Header ---
                 Card(
-                  // This card has a local style override for a different look
                   elevation: 2,
                   shadowColor: Colors.black.withOpacity(0.05),
                   child: Padding(
@@ -51,11 +49,8 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                // --- Menu Options ---
                 _buildSectionHeader(context, 'Account'),
                 Card(
-                  // Styling is now inherited from AppTheme
                   child: Column(
                     children: [
                       _buildProfileMenuOption(
@@ -67,7 +62,9 @@ class ProfileScreen extends ConsumerWidget {
                         icon: Icons.settings_outlined,
                         title: 'Settings',
                         onTap: () {
-                          context.go('/home/settings');
+                          // --- NAVIGATION FIXED HERE ---
+                          // Use push to add the settings screen on top of the stack
+                          context.push('/home/settings');
                         },
                       ),
                     ],
@@ -76,7 +73,6 @@ class ProfileScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
                 _buildSectionHeader(context, 'Support'),
                 Card(
-                  // Styling is now inherited from AppTheme
                   child: Column(
                     children: [
                       _buildProfileMenuOption(
@@ -99,7 +95,6 @@ class ProfileScreen extends ConsumerWidget {
                   onPressed: () {
                     ref.read(authRepositoryProvider).signOut();
                   },
-                  // No style needed; it inherits from OutlinedButtonThemeData
                 ),
               ],
             ),
@@ -124,7 +119,6 @@ class ProfileScreen extends ConsumerWidget {
     required String title,
     required VoidCallback onTap,
   }) {
-    // ListTile now inherits its icon color from the global theme
     return ListTile(
       leading: Icon(icon),
       title: Text(title),
