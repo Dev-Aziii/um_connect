@@ -10,69 +10,64 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      clipBehavior: Clip.antiAlias,
+      elevation: 4,
+      shadowColor: Colors.black.withOpacity(0.2),
       child: InkWell(
-        // --- THIS IS THE MODIFIED PART ---
-        onTap: () {
-          // Use GoRouter to navigate to the detail screen, passing the event's ID.
-          context.go('/home/event/${event.id}');
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        onTap: () => context.go('/home/event/${event.id}'),
+        child: Stack(
+          fit: StackFit.expand, // Make stack children fill the card
           children: [
-            InkWell(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (_) => ImageDialog(imageUrl: event.imageUrl),
+            // Layer 1: Background Image
+            Image.network(
+              event.imageUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: Colors.grey[300],
+                  child: const Icon(
+                    Icons.broken_image,
+                    color: Colors.grey,
+                    size: 50,
+                  ),
                 );
               },
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                ),
-                child: Image.network(
-                  event.imageUrl,
-                  height: 120,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(
-                      Icons.broken_image,
-                      size: 50,
-                      color: Colors.grey,
-                    );
-                  },
+            ),
+
+            // Layer 2: Gradient Overlay
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.2),
+                    Colors.black.withOpacity(0.8),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: const [0.5, 0.7, 1.0], // Control gradient start
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
+
+            // Layer 3: Text Content
+            Positioned(
+              bottom: 12,
+              left: 12,
+              right: 12,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     event.title,
                     style: const TextStyle(
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: 18,
+                      shadows: [Shadow(blurRadius: 5.0, color: Colors.black54)],
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -80,39 +75,17 @@ class EventCard extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.calendar_today_outlined,
                         size: 14,
-                        color: Colors.grey.shade700,
+                        color: Colors.white70,
                       ),
                       const SizedBox(width: 6),
                       Text(
                         DateFormat.yMMMd().format(event.date),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 12,
-                          color: Colors.grey.shade700,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.location_on_outlined,
-                        size: 14,
-                        color: Colors.grey.shade700,
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          event.venue,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade700,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                          color: Colors.white70,
                         ),
                       ),
                     ],
@@ -122,40 +95,6 @@ class EventCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class ImageDialog extends StatelessWidget {
-  final String imageUrl;
-  const ImageDialog({super.key, required this.imageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.all(10),
-      child: Stack(
-        alignment: Alignment.topRight,
-        children: [
-          InteractiveViewer(
-            panEnabled: true,
-            minScale: 0.5,
-            maxScale: 4,
-            child: Center(child: Image.network(imageUrl, fit: BoxFit.contain)),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: IconButton(
-              icon: const CircleAvatar(
-                backgroundColor: Colors.black54,
-                child: Icon(Icons.close, color: Colors.white),
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
-        ],
       ),
     );
   }

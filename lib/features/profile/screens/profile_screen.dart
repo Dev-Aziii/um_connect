@@ -12,12 +12,12 @@ class ProfileScreen extends ConsumerWidget {
     final user = userAsyncValue.value;
 
     return Scaffold(
+      appBar: AppBar(title: const Text('Profile')),
       body: user == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
-              padding: const EdgeInsets.fromLTRB(16.0, 40.0, 16.0, 16.0),
+              padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 100.0),
               children: [
-                // --- User Header ---
                 Container(
                   padding: const EdgeInsets.all(24.0),
                   decoration: BoxDecoration(
@@ -50,7 +50,7 @@ class ProfileScreen extends ConsumerWidget {
                         ),
                       ),
                       Text(
-                        'Student',
+                        'Student', // Placeholder for user role
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ],
@@ -61,6 +61,8 @@ class ProfileScreen extends ConsumerWidget {
                 // --- Menu Options ---
                 _buildSectionHeader(context, 'Account'),
                 Card(
+                  // --- BACKGROUND COLOR ADDED ---
+                  color: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -71,9 +73,7 @@ class ProfileScreen extends ConsumerWidget {
                       _buildProfileMenuOption(
                         icon: Icons.edit_outlined,
                         title: 'Edit Profile',
-                        onTap: () {
-                          // TODO: Implement Edit Profile page
-                        },
+                        onTap: () {},
                       ),
                       _buildProfileMenuOption(
                         icon: Icons.settings_outlined,
@@ -88,6 +88,8 @@ class ProfileScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
                 _buildSectionHeader(context, 'Support'),
                 Card(
+                  // --- BACKGROUND COLOR ADDED ---
+                  color: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -98,23 +100,17 @@ class ProfileScreen extends ConsumerWidget {
                       _buildProfileMenuOption(
                         icon: Icons.help_outline,
                         title: 'Help & Support',
-                        onTap: () {
-                          // TODO: Implement Help & Support page
-                        },
+                        onTap: () {},
                       ),
                       _buildProfileMenuOption(
                         icon: Icons.info_outline,
                         title: 'About App',
-                        onTap: () {
-                          // TODO: Implement About App page
-                        },
+                        onTap: () {},
                       ),
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 32),
-
                 OutlinedButton.icon(
                   icon: const Icon(Icons.logout),
                   label: const Text('Logout'),

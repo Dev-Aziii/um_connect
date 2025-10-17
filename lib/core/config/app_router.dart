@@ -5,6 +5,7 @@ import 'package:um_connect/features/auth/screens/login_screen.dart';
 import 'package:um_connect/features/auth/screens/splash_screen.dart';
 import 'package:um_connect/features/events/screens/event_detail_screen.dart';
 import 'package:um_connect/features/home/screens/main_nav_screen.dart';
+import 'package:um_connect/features/profile/screens/profile_screen.dart';
 import 'package:um_connect/features/settings/screens/settings_screen.dart';
 import 'package:um_connect/providers/auth_provider.dart';
 import 'package:um_connect/features/events/screens/create_event_screen.dart';
@@ -43,7 +44,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             path: 'settings',
             builder: (context, state) => const SettingsScreen(),
           ),
-          // --- NEW ROUTES ---
           GoRoute(
             path: 'create-event',
             builder: (context, state) => const CreateEventScreen(),
@@ -54,15 +54,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
+      // --- NEW TOP-LEVEL ROUTE for Profile ---
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const ProfileScreen(),
+      ),
     ],
     redirect: (context, state) {
       final isLoggedIn = authState.valueOrNull != null;
       final isGoingToLogin = state.matchedLocation == '/login';
 
       if (authState.isLoading || authState.hasError) return null;
-
       if (!isLoggedIn && !isGoingToLogin) return '/login';
-
       if (isLoggedIn && isGoingToLogin) return '/home';
 
       return null;
