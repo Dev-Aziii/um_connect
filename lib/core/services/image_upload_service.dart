@@ -6,7 +6,6 @@ import 'package:um_connect/core/config/imagekit_config.dart';
 class ImageUploadService {
   final ImagePicker _picker = ImagePicker();
 
-  // 1. Pick an image from the user's gallery
   Future<XFile?> pickImage() async {
     try {
       return await _picker.pickImage(source: ImageSource.gallery);
@@ -16,30 +15,34 @@ class ImageUploadService {
     }
   }
 
-  // 2. Upload the picked image to ImageKit.io
-  Future<String?> uploadImage(XFile image) async {
+  // --- MODIFIED METHOD ---
+  /// Uploads the picked image to ImageKit.io with a specific filename and folder.
+  Future<String?> uploadImage(
+    XFile image, {
+    required String fileName,
+    String folderPath = '/',
+  }) async {
     try {
       final uri = Uri.parse(ImageKitConfig.uploadUrl);
       final request = http.MultipartRequest('POST', uri);
 
-      // Add authentication headers
       final String basicAuth =
           'Basic ${base64Encode(utf8.encode('${ImageKitConfig.privateKey}:'))}';
       request.headers['Authorization'] = basicAuth;
 
-      // Add image file to the request
       final file = await http.MultipartFile.fromPath('file', image.path);
       request.files.add(file);
 
       // Add other required fields for ImageKit
-      request.fields['fileName'] = image.name;
+      request.fields['fileName'] = fileName; // Use the provided filename
+      request.fields['folder'] = folderPath;
 
       final response = await request.send();
 
       if (response.statusCode == 200) {
         final responseBody = await response.stream.bytesToString();
         final jsonResponse = jsonDecode(responseBody);
-        return jsonResponse['url']; // Return the URL of the uploaded image
+        return jsonResponse['url'];
       } else {
         final errorBody = await response.stream.bytesToString();
         print(

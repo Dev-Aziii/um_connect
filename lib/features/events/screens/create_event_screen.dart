@@ -85,26 +85,33 @@ class _CreateEventScreenState extends ConsumerState<CreateEventScreen> {
       setState(() => _isLoading = true);
 
       try {
-        // 1. Upload image to ImageKit
+        // --- MODIFIED CALL ---
+        // 1. Get the title from the controller to use as the filename.
+        final String eventTitle = _titleController.text.trim();
+
+        // 2. Upload image to ImageKit with the specified folder and filename.
         final imageUrl = await ImageUploadService().uploadImage(
           _selectedImage!,
+          folderPath: '/um_connect/events',
+          fileName: eventTitle,
         );
+
         if (imageUrl == null) {
           throw Exception('Image upload failed.');
         }
 
-        // 2. Save event data to Firestore
+        // 3. Save event data to Firestore
         await ref
             .read(eventsRepositoryProvider)
             .createEvent(
-              title: _titleController.text,
+              title: eventTitle,
               detail: _detailController.text,
               venue: _venueController.text,
               date: _selectedDate!,
               imageUrl: imageUrl,
             );
 
-        // 3. Invalidate providers to refetch lists
+        // 4. Invalidate providers to refetch lists
         ref.invalidate(upcomingEventsProvider);
         ref.invalidate(allUpcomingEventsProvider);
 
